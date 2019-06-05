@@ -3,9 +3,27 @@ body, html {
     padding: 0;
     width: 100%;
     height: 100%;
+    position: relative;
 }
 body {
     font-family: 'Space Mono'
+}
+
+.fancy {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+h1 {
+    padding: 0;
+    margin: 0;
+    font-style: italic;
+    font-size: 30vw;
+    text-align: center;
 }
 
 canvas {

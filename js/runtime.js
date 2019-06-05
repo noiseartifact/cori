@@ -6,14 +6,11 @@ unitePaths = function(paths) {
         
         if (!union) {
             union = child;
-            delete child
         } else {
             union = union.unite(child);
-            delete child
         }
     }
     
-    delete paths;
     return union;
 }
 
@@ -30,24 +27,22 @@ function generatePositions(n) {
 
 
 
-var url = 'assets/gradient-square.png';
-var raster = new Raster(url, project.view.center);
-var ballPositions = generatePositions(3)
+// var url = 'assets/gradient-square.png';
+// var raster = new Raster(url, project.view.center);
+var ballPositions = generatePositions(5)
 var destinations = Array.from(ballPositions)
 
 var handle_len_rate = 2.4;
 var circlePaths = [];
 
-
-var allPaths = []
-var radius = 50;
 for (var i = 0, l = ballPositions.length; i < l; i++) {
 	var circlePath = new Path.Circle({
 		center: ballPositions[i],
-		radius: Math.floor(Math.random() * 200) + 50
+		radius: Math.floor(Math.random() * 300) + 25
 	});
 	circlePaths.push(circlePath);
 }
+ballPositions = []
 
 var connections = [];
 function renderMask(paths) {
@@ -59,15 +54,14 @@ function renderMask(paths) {
 
 	for (var i = 0, l = paths.length; i < l; i++) {
 		for (var j = i - 1; j >= 0; j--) {
-			var path = metaball(paths[i], paths[j], 0.5, handle_len_rate, 400);
+			var path = metaball(paths[i], paths[j], 0.6, handle_len_rate, 300);
 			if (path) {
 				connections.push(path);
-			}
+            }
 		}
     }
     
-    delete allPaths
-    allPaths = connections.concat(circlePaths)
+    return connections.concat(paths)
 }
 
 function animate(paths) {
@@ -75,11 +69,10 @@ function animate(paths) {
         var item = paths[i]
         // console.warn(item.position)
         var vector = destinations[i] - item.position;
-        
         // We add 1/30th of the vector to the position property
         // of the text item, to move it in the direction of the
         // destination point:
-        item.position += vector / 100;
+        item.position += vector / 300;
         // item.position += [Math.random() * 20 - 10, Math.random() * 2 - 1]
         
         // Set the content of the text item to be the length of the vector.
@@ -91,22 +84,41 @@ function animate(paths) {
         if (vector.length < 100) {
             destinations[i] = Point.random() * project.view.viewSize;
         }
-        delete item
-        delete vector
     }
 }
 
 function onFrame(event) {
+    if (group) {
     animate(circlePaths)
     // metaball it up
-    renderMask(circlePaths)
-    var group = new Group(unitePaths(allPaths), raster)
+    unified = unitePaths(renderMask(circlePaths))
+    group.removeChildren()
+    group.addChild(unified)
+    group.addChild(bg)
     group.clipped = true
+    }
 }
 
-renderMask(circlePaths);
-console.log(Point.random() * project.view.viewSize)
-console.log(destinations)
+function onResize(event) {
+    if (bg) {
+        bg.scale(project.view.viewSize.width / bg.bounds.width, project.view.viewSize.height / bg.bounds.height)
+        bg.position = project.view.center
+    }
+}
+var bg
+var group
+var unified
+project.importSVG('assets/gradient.svg', function (item) {
+    console.warn('got svg')
+    bg = item
+    bg.scale(project.view.viewSize.width / bg.bounds.width, project.view.viewSize.height / bg.bounds.height)
+    bg.position = project.view.center
+    unified = unitePaths(renderMask(circlePaths))
+    group = new Group({
+        children: [unified, item],
+        clipped: true
+    })
+})
 
 
 
