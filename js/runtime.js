@@ -38,7 +38,7 @@ var circlePaths = [];
 for (var i = 0, l = ballPositions.length; i < l; i++) {
 	var circlePath = new Path.Circle({
 		center: ballPositions[i],
-		radius: Math.floor(Math.random() * 300) + 25
+		radius: Math.floor(Math.random() * 250) + 25
 	});
 	circlePaths.push(circlePath);
 }
@@ -54,7 +54,7 @@ function renderMask(paths) {
 
 	for (var i = 0, l = paths.length; i < l; i++) {
 		for (var j = i - 1; j >= 0; j--) {
-			var path = metaball(paths[i], paths[j], 0.6, handle_len_rate, 300);
+			var path = metaball(paths[i], paths[j], 0.6, handle_len_rate, 200);
 			if (path) {
 				connections.push(path);
             }
