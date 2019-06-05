@@ -44,7 +44,7 @@ var radius = 50;
 for (var i = 0, l = ballPositions.length; i < l; i++) {
 	var circlePath = new Path.Circle({
 		center: ballPositions[i],
-		radius: Math.floor(Math.random() * 300) + 50
+		radius: Math.floor(Math.random() * 200) + 50
 	});
 	circlePaths.push(circlePath);
 }
