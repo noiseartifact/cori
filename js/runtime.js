@@ -7,7 +7,7 @@ unitePaths = function(paths) {
         if (!union) {
             union = child;
         } else {
-            union = union.unite(child);
+            union = union.unite(child, {insert: false});
         }
     }
     
