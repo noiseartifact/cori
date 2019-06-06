@@ -30,6 +30,13 @@ function generatePositions(n) {
 // var url = 'assets/gradient-square.png';
 // var raster = new Raster(url, project.view.center);
 var ballPositions = generatePositions(5)
+var ballRadii = [
+    Math.floor(Math.random() * (project.view.viewSize.height / 100) ) + 25,
+    Math.floor(Math.random() * 100) + 25,
+    Math.floor(Math.random() * 100) + 25,
+    Math.floor(Math.random() * (project.view.viewSize.height / 6)) + 25,
+    Math.floor(Math.random() * (project.view.viewSize.height / 3)) + 25
+]
 var destinations = Array.from(ballPositions)
 
 var handle_len_rate = 2.4;
@@ -38,7 +45,7 @@ var circlePaths = [];
 for (var i = 0, l = ballPositions.length; i < l; i++) {
 	var circlePath = new Path.Circle({
 		center: ballPositions[i],
-		radius: Math.floor(Math.random() * 250) + 25
+		radius: ballRadii[i]
 	});
 	circlePaths.push(circlePath);
 }
@@ -72,7 +79,7 @@ function animate(paths) {
         // We add 1/30th of the vector to the position property
         // of the text item, to move it in the direction of the
         // destination point:
-        item.position += vector / 300;
+        item.position += vector / (75 * Math.sqrt(ballRadii[i]));
         // item.position += [Math.random() * 20 - 10, Math.random() * 2 - 1]
         
         // Set the content of the text item to be the length of the vector.
@@ -92,9 +99,10 @@ function onFrame(event) {
     animate(circlePaths)
     // metaball it up
     unified = unitePaths(renderMask(circlePaths))
-    group.removeChildren()
-    group.addChild(unified)
-    group.addChild(bg)
+    group.firstChild.replaceWith(unified)
+    // group.removeChildren()
+    // group.addChild(unified)
+    // group.addChild(bg)
     group.clipped = true
     }
 }
